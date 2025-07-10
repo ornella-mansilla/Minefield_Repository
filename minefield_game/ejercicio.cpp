@@ -178,6 +178,7 @@ void printPlayerMines(const Player& player, int playerNumber) {
 
 int main()
 {
+    //comentario de mi fork
     int columns = Init::getBoardDimension("columnas");
     int rows = Init::getBoardDimension("filas");
     int mines = Init::getMineCount();
