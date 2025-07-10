@@ -177,7 +177,7 @@ void printPlayerMines(const Player& player, int playerNumber) {
 // en plan, las celdas necesitan tener un estado que me informe si las celdas estan libres, deshabilitadas o con alguna mina o algo asi
 
 int main()
-{
+{//prueba 2
     int columns = Init::getBoardDimension("columnas");
     int rows = Init::getBoardDimension("filas");
     int mines = Init::getMineCount();
