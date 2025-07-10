@@ -181,6 +181,8 @@ int main()
 {
     //prueba 3
 //prueba 2
+//prueba final
+
 
     int columns = Init::getBoardDimension("columnas");
     int rows = Init::getBoardDimension("filas");
