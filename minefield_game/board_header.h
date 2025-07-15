@@ -9,9 +9,7 @@ struct Board
     std::vector<std::vector<Cell>> grid;
 
 };
-//void showBoard(const Board& board);
 namespace BoardUtils
 {
-    //void printBoard(const Board& board);
     void printBoardPerPlayer(const Board& board, const Player& player);
 }
