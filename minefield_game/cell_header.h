@@ -14,14 +14,14 @@ class Cell
 private:
     int x;
     int y;
-    CellStatus state;
+    CellStatus status;
 public:
     Cell(int x, int y);
-    Cell(int x, int y, CellStatus state);
+    Cell(int x, int y, CellStatus status);
     Cell();
     int getX() const;
     int getY() const;
-    void setState(CellStatus newState);
+    void setState(CellStatus newStatus);
     CellStatus getState() const;
     bool isTaken() const;
     char getSymbol() const;

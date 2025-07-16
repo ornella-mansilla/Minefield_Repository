@@ -4,7 +4,7 @@
 
 namespace BoardUtils
 {
-    void printBoardPerPlayer(const Board& board, const Player& player)
+    void printBoardPerPlayer(Board const& board, Player const& player)
     {
         // print column headers
         std::cout << "    ";

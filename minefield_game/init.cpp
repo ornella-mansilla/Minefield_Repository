@@ -19,7 +19,7 @@ namespace Init
     }
     bool minesValidation(int const count) { return count >= 3 && count <= 8; }
 
-    int getBoardDimension(const std::string &axisName)
+    int getBoardDimension(std::string const& axisName)
     {
         int size = 0;
         std::cout << "Enter number of " << axisName << " (between 25 and 50): ";
@@ -105,7 +105,7 @@ namespace Init
     }
 
     // prints a player's mines
-    void printPlayerMines(const Player &player, int playerNumber)
+    void printPlayerMines(Player const& player, int playerNumber)
     {
         std::cout << "\nMines of the player " << playerNumber << ":\n";
         for (size_t i = 0; i < player.mines.size(); ++i)

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <algorithm>
 
-bool cellMatches(const Cell &a, const Cell &b)
+bool cellMatches(Cell const &a, Cell const &b)
 {
     return a.getX() == b.getX() && a.getY() == b.getY();
 }
