@@ -5,7 +5,7 @@
 #include "../cell_header.h"
 #include <iostream>
 #include <algorithm>
-// ya hice la separacion en distintas funciones del process guesses falta el de overlapping mines
+// ya hice la separacion en distintas funciones del process guesses y el ovelapping mines
 bool cellMatches(Cell const &a, Cell const &b)
 {
     return a.getX() == b.getX() && a.getY() == b.getY();
@@ -143,9 +143,37 @@ void checkSelfDamage(Player &attacker)
 
     attacker.mines = updatedOwnMines;
 }
+
+std::vector<Mine> removeOverlaps(const std::vector<Mine>& mines, const std::vector<Mine>& otherMines)
+{
+    std::vector<Mine> cleaned;
+    for (Mine const& m : mines)
+    {
+        bool overlap = std::any_of(otherMines.begin(), otherMines.end(), 
+                                   [&m](Mine const& other) { return cellMatches(m.cell, other.cell); });
+        if (!overlap)
+        {
+            cleaned.push_back(m);
+        }
+    }
+    return cleaned;
+}
+
 void removeOverlappingMines(Player &p1, Player &p2)
 {
-    std::vector<Mine> p1Cleaned, p2Cleaned;
+    auto p1Cleaned = removeOverlaps(p1.mines, p2.mines);
+    auto p2Cleaned = removeOverlaps(p2.mines, p1.mines);
+
+    if (p1.mines.size() != p1Cleaned.size() || p2.mines.size() != p2Cleaned.size())
+    {
+        std::cout << "Some overlapping mines were neutralized!\n";
+    }
+
+    p1.mines = std::move(p1Cleaned);
+    p2.mines = std::move(p2Cleaned);
+
+    //metodo viejo:
+    /*std::vector<Mine> p1Cleaned, p2Cleaned;
 
     for (const auto &m1 : p1.mines)
     {
@@ -187,7 +215,7 @@ void removeOverlappingMines(Player &p1, Player &p2)
     }
 
     p1.mines = p1Cleaned;
-    p2.mines = p2Cleaned;
+    p2.mines = p2Cleaned;*/
 }
 
 void ResolutionState::handle(GameContext &context)
@@ -196,6 +224,7 @@ void ResolutionState::handle(GameContext &context)
     std::cout << "\n--- Resolution Phase ---\n";
 
     removeOverlappingMines(context.player1, context.player2);
+
     processGuesses("Player 1",context.player1, context.player2, context.board);
     processGuesses("Player 2",context.player2, context.player1, context.board);
 

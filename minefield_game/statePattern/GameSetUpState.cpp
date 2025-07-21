@@ -3,7 +3,7 @@
 #include "PlacementState.h"
 #include "../init_header.h"
 #include <iostream>
-
+//en algun lado de por aca tengo que setear el id del player
 void GameSetUpState::handle(GameContext& context)
 {
     std::cout << "=== Game Setup ===\n";
