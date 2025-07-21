@@ -18,7 +18,7 @@ private:
 public:
     Cell(int x, int y);
     Cell(int x, int y, CellStatus status);
-    Cell();
+    Cell(); //aca deberia poner el default constructor (para que el cliente pueda saber que existe)
     int getX() const;
     int getY() const;
     void setState(CellStatus newStatus);

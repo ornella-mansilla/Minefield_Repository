@@ -5,13 +5,13 @@
 #include "../cell_header.h"
 #include <iostream>
 #include <algorithm>
-
+// ya hice la separacion en distintas funciones del process guesses falta el de overlapping mines
 bool cellMatches(Cell const &a, Cell const &b)
 {
     return a.getX() == b.getX() && a.getY() == b.getY();
 }
 
-void processGuesses(std::string const &attackerName, Player &attacker, Player &defender, Board &board)
+void checkHits(std::string const &attackerName, Player &attacker, Player &defender)
 {
     std::vector<Mine> updatedMines;
     for (const auto &mine : defender.mines)
@@ -35,7 +35,49 @@ void processGuesses(std::string const &attackerName, Player &attacker, Player &d
     // save destroyed mines
     for (const auto &oldMine : defender.mines)
     {
-        bool wasDestroyed = std::none_of(updatedMines.begin(), updatedMines.end(), [&](const Mine &m)
+        bool wasDestroyed = std::none_of(updatedMines.begin(), updatedMines.end(), [&oldMine](const Mine &m)
+                                         { return cellMatches(m.cell, oldMine.cell); });
+
+        if (wasDestroyed)
+        {
+            defender.disabledMineSpots.push_back(oldMine.cell);
+        }
+    }
+
+    defender.mines = updatedMines;
+}
+
+void processGuesses(std::string const &attackerName, Player &attacker, Player &defender, Board &board)
+{
+    // check if the attacker hit any mines of the defender
+    checkHits(attackerName, attacker, defender);
+    // check if the attacker guessed where he had a mine
+    checkSelfDamage(attacker);
+
+
+    /*std::vector<Mine> updatedMines;
+    for (const auto &mine : defender.mines)
+    {
+        bool hit = false;
+        for (const auto &guess : attacker.guesses)
+        {
+            if (cellMatches(mine.cell, guess))
+            {
+                std::cout << attackerName << " hit a mine at (" << mine.cell.getX() << ", " << mine.cell.getY() << ")!\n";
+                hit = true;
+                break;
+            }
+        }
+        if (!hit)
+        {
+            updatedMines.push_back(mine);
+        }
+    }
+
+    // save destroyed mines
+    for (const auto &oldMine : defender.mines)
+    {
+        bool wasDestroyed = std::none_of(updatedMines.begin(), updatedMines.end(), [&oldMine](const Mine &m)
                                          { return cellMatches(m.cell, oldMine.cell); });
 
         if (wasDestroyed)
@@ -67,7 +109,7 @@ void processGuesses(std::string const &attackerName, Player &attacker, Player &d
         }
     }
 
-    attacker.mines = updatedOwnMines;
+    attacker.mines = updatedOwnMines;*/
 
     // mark guessed cells as "Taken"
     for (const auto &guess : attacker.guesses)
@@ -77,7 +119,30 @@ void processGuesses(std::string const &attackerName, Player &attacker, Player &d
         board.grid[gy][gx].setState(CellStatus::Taken);
     }
 }
+void checkSelfDamage(Player &attacker)
+{
+    std::vector<Mine> updatedOwnMines;
+    for (const auto &mine : attacker.mines)
+    {
+        bool selfHit = false;
+        for (const auto &guess : attacker.guesses)
+        {
+            if (cellMatches(mine.cell, guess))
+            {
+                std::cout << "Oops! You guessed your own mine at (" << mine.cell.getX() << ", " << mine.cell.getY() << ")\n";
+                attacker.disabledMineSpots.push_back(mine.cell);
+                selfHit = true;
+                break;
+            }
+        }
+        if (!selfHit)
+        {
+            updatedOwnMines.push_back(mine);
+        }
+    }
 
+    attacker.mines = updatedOwnMines;
+}
 void removeOverlappingMines(Player &p1, Player &p2)
 {
     std::vector<Mine> p1Cleaned, p2Cleaned;
