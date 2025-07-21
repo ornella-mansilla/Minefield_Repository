@@ -11,5 +11,5 @@ struct Board
 };
 namespace BoardUtils
 {
-    void printBoardPerPlayer(const Board& board, const Player& player);
+    void printBoardPerPlayer(Board const& board, Player const& player);
 }

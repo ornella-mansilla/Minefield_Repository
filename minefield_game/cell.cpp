@@ -1,14 +1,14 @@
 #include "cell_header.h"
 
 Cell::Cell(int x, int y)
-    : x(x), y(y), state(CellStatus::Empty){}
-Cell::Cell(int x, int y, CellStatus state)
-    : x(x), y(y), state(state) {}
+    : x(x), y(y), status(CellStatus::Empty){}
+Cell::Cell(int x, int y, CellStatus status)
+    : x(x), y(y), status(status) {}
 
 Cell::Cell() = default;
-void Cell::setState(CellStatus newState) { state = newState; }
-CellStatus Cell::getState() const { return state; }
-bool Cell::isTaken() const { return state == CellStatus::Taken; }
-char Cell::getSymbol() const { return static_cast<char>(state); }
+void Cell::setState(CellStatus newStatus) { status = newStatus; }
+CellStatus Cell::getState() const { return status; }
+bool Cell::isTaken() const { return status == CellStatus::Taken; }
+char Cell::getSymbol() const { return static_cast<char>(status); }
 int Cell::getX() const { return x; }
 int Cell::getY() const { return y; }

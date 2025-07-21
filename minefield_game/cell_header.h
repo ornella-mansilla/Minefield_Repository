@@ -14,14 +14,14 @@ class Cell
 private:
     int x;
     int y;
-    CellStatus state;
+    CellStatus status;
 public:
     Cell(int x, int y);
-    Cell(int x, int y, CellStatus state);
-    Cell();
+    Cell(int x, int y, CellStatus status);
+    Cell(); //aca deberia poner el default constructor (para que el cliente pueda saber que existe)
     int getX() const;
     int getY() const;
-    void setState(CellStatus newState);
+    void setState(CellStatus newStatus);
     CellStatus getState() const;
     bool isTaken() const;
     char getSymbol() const;

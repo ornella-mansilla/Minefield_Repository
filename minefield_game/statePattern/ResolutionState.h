@@ -1,7 +1,7 @@
 #pragma once
 #include "GameState.h"
 
-bool cellMatches(const Cell& a, const Cell& b);
+bool cellMatches(Cell const& a, Cell const& b);
 class ResolutionState : public GameState
 {
 public:
