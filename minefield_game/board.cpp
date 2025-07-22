@@ -4,7 +4,7 @@
 
 namespace BoardUtils
 {
-    void printBoardPerPlayer(Board const& board, Player const& player)
+    /*void printBoardPerPlayer(Board const& board, Player const& player)
     {
         // print column headers
         std::cout << "    ";
@@ -45,6 +45,119 @@ namespace BoardUtils
             }
             std::cout << "\n";
         }
+    }*/
+    // void printColumnHeaders(const Board &board)
+    // {
+    //     std::cout << "    ";
+    //     for (int x : board.axisX)
+    //     {
+    //         std::cout << (x < 10 ? " " : "") << x << " ";
+    //     }
+    //     std::cout << "\n   ";
+    //     for (size_t i = 0; i < board.axisX.size(); ++i)
+    //     {
+    //         std::cout << "---";
+    //     }
+    //     std::cout << "\n";
+    // }
+
+    // bool isMineVisibleForPlayer(const Board &board, const Player &player, size_t x, size_t y)
+    // {
+    //     for (const auto &mine : player.mines)
+    //     {
+    //         int mineX = mine.location.getX();
+    //         int mineY = mine.location.getY();
+    //         if (mineX == board.axisX[x] && mineY == board.axisY[y])
+    //         {
+    //             return true; // Found a mine for the player
+    //         }
+    //     }
+    //     return false; // No mine found for the player
+    // }
+
+    // void printRow(const Board &board, const Player &player, size_t y)
+    // {
+    //     int displayY = board.axisY[y];
+    //     std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
+
+    //     for (size_t x = 0; x < board.axisX.size(); ++x)
+    //     {
+    //         if (isMineVisibleForPlayer(board, player, x, y))
+    //         {
+    //             std::cout << "*  "; // mine visible to this player
+    //         }
+    //         else
+    //         {
+    //             std::cout << board.grid[y][x].getSymbol() << "  "; // actual state of the cell
+    //         }
+    //     }
+    //     std::cout << "\n";
+    // }
+
+    // void printBoardPerPlayer(const Board &board, const Player &player)
+    // {
+    //     printColumnHeaders(board); // 1. print the column headers
+
+    //     for (size_t y = 0; y < board.axisY.size(); ++y)
+    //     {
+    //         printRow(board, player, y); // 2. print each row
+    //     }
+    // }
+    void printColumnHeaders(const Board &board)
+    {
+        std::cout << "    ";
+        for (int x : board.axisX)
+        {
+            std::cout << (x < 10 ? ' ' : ' ') << x << ' '; // Se mantiene el espacio para el formato
+        }
+        std::cout << '\n'; // Cambiado a un solo carácter
+        for (size_t i = 0; i < board.axisX.size(); ++i)
+        {
+            std::cout << "---";
+        }
+        std::cout << '\n'; // Cambiado a un solo carácter
     }
-    
+
+    bool isMineVisibleForPlayer(const Board &board, const Player &player, size_t x, size_t y)
+    {
+        for (const auto &mine : player.mines)
+        {
+            int mineX = mine.location.getX();
+            int mineY = mine.location.getY();
+            if (mineX == board.axisX[x] && mineY == board.axisY[y])
+            {
+                return true; // Found a mine for the player
+            }
+        }
+        return false; // No mine found for the player
+    }
+
+    void printRow(const Board &board, const Player &player, size_t y)
+    {
+        int displayY = board.axisY[y];
+        std::cout << (displayY < 10 ? ' ' : ' ') << displayY << "| "; // Se mantiene el espacio para el formato
+
+        for (size_t x = 0; x < board.axisX.size(); ++x)
+        {
+            if (isMineVisibleForPlayer(board, player, x, y))
+            {
+                std::cout << "*  "; // Mine visible to this player
+            }
+            else
+            {
+                std::cout << board.grid[y][x].getSymbol() << ' '; // Actual state of the cell
+            }
+        }
+        std::cout << '\n'; // Cambiado a un solo carácter
+    }
+
+    void printBoardPerPlayer(const Board &board, const Player &player)
+    {
+        printColumnHeaders(board); // Print the column headers
+
+        for (size_t y = 0; y < board.axisY.size(); ++y)
+        {
+            printRow(board, player, y); // Print each row
+        }
+    }
 }

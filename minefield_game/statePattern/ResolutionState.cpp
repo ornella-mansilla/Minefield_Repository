@@ -19,9 +19,9 @@ void checkHits(std::string const &attackerName, Player &attacker, Player &defend
         bool hit = false;
         for (const auto &guess : attacker.guesses)
         {
-            if (cellMatches(mine.cell, guess))
+            if (cellMatches(mine.location, guess))
             {
-                std::cout << attackerName << " hit a mine at (" << mine.cell.getX() << ", " << mine.cell.getY() << ")!\n";
+                std::cout << attackerName << " hit a mine at (" << mine.location.getX() << ", " << mine.location.getY() << ")!\n";
                 hit = true;
                 break;
             }
@@ -36,15 +36,39 @@ void checkHits(std::string const &attackerName, Player &attacker, Player &defend
     for (const auto &oldMine : defender.mines)
     {
         bool wasDestroyed = std::none_of(updatedMines.begin(), updatedMines.end(), [&oldMine](const Mine &m)
-                                         { return cellMatches(m.cell, oldMine.cell); });
+                                         { return cellMatches(m.location, oldMine.location); });
 
         if (wasDestroyed)
         {
-            defender.disabledMineSpots.push_back(oldMine.cell);
+            defender.disabledMineSpots.push_back(oldMine.location);
         }
     }
 
     defender.mines = updatedMines;
+}
+void checkSelfDamage(Player &attacker)
+{
+    std::vector<Mine> updatedOwnMines;
+    for (const auto &mine : attacker.mines)
+    {
+        bool selfHit = false;
+        for (const auto &guess : attacker.guesses)
+        {
+            if (cellMatches(mine.location, guess))
+            {
+                std::cout << "Oops! You guessed your own mine at (" << mine.location.getX() << ", " << mine.location.getY() << ")\n";
+                attacker.disabledMineSpots.push_back(mine.location);
+                selfHit = true;
+                break;
+            }
+        }
+        if (!selfHit)
+        {
+            updatedOwnMines.push_back(mine);
+        }
+    }
+
+    attacker.mines = updatedOwnMines;
 }
 
 void processGuesses(std::string const &attackerName, Player &attacker, Player &defender, Board &board)
@@ -119,30 +143,7 @@ void processGuesses(std::string const &attackerName, Player &attacker, Player &d
         board.grid[gy][gx].setState(CellStatus::Taken);
     }
 }
-void checkSelfDamage(Player &attacker)
-{
-    std::vector<Mine> updatedOwnMines;
-    for (const auto &mine : attacker.mines)
-    {
-        bool selfHit = false;
-        for (const auto &guess : attacker.guesses)
-        {
-            if (cellMatches(mine.cell, guess))
-            {
-                std::cout << "Oops! You guessed your own mine at (" << mine.cell.getX() << ", " << mine.cell.getY() << ")\n";
-                attacker.disabledMineSpots.push_back(mine.cell);
-                selfHit = true;
-                break;
-            }
-        }
-        if (!selfHit)
-        {
-            updatedOwnMines.push_back(mine);
-        }
-    }
 
-    attacker.mines = updatedOwnMines;
-}
 
 std::vector<Mine> removeOverlaps(const std::vector<Mine>& mines, const std::vector<Mine>& otherMines)
 {
@@ -150,7 +151,7 @@ std::vector<Mine> removeOverlaps(const std::vector<Mine>& mines, const std::vect
     for (Mine const& m : mines)
     {
         bool overlap = std::any_of(otherMines.begin(), otherMines.end(), 
-                                   [&m](Mine const& other) { return cellMatches(m.cell, other.cell); });
+                                   [&m](Mine const& other) { return cellMatches(m.location, other.location); });
         if (!overlap)
         {
             cleaned.push_back(m);

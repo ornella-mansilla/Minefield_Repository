@@ -14,6 +14,6 @@ struct Player
 
 struct Mine
 {
-    Cell cell;
-    Mine(int x, int y) : cell(x, y) {}
+    Cell location;
+    Mine(int x, int y) : location(x, y) {}
 };
