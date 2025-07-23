@@ -1,7 +1,7 @@
 #include "GameContext.h"
 #include "GameSetUpState.h"
 #include "PlacementState.h"
-#include "../init_header.h"
+#include <init_header.h>
 #include <iostream>
 
 //se ve super mal el table y la parte de placement no me dice que mina esto poniendo en ese momento.

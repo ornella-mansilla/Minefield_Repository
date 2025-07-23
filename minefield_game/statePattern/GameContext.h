@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include "../board_header.h"
-#include "../player_header.h"
+#include <board_header.h>
+#include <player_header.h>
 
 class GameState;
 

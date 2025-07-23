@@ -2,7 +2,7 @@
 #include "ResolutionState.h"
 #include "EndGameState.h"
 #include "PlacementState.h"
-#include "../cell_header.h"
+#include <cell_header.h>
 #include <iostream>
 #include <algorithm>
 // ya hice la separacion en distintas funciones del process guesses y el ovelapping mines

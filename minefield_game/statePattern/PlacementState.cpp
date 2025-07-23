@@ -1,8 +1,8 @@
 #include "GameContext.h"
 #include "PlacementState.h"
 #include "GuessingState.h"
-#include "../init_header.h"
-#include "../board_header.h"
+#include <init_header.h>
+#include <board_header.h>
 #include <iostream>
 
 void PlacementState::handle(GameContext& context)

@@ -5,14 +5,14 @@
 #include "player_header.h"
 namespace Init
 {
-    int const minBoardSize = 24;
-    int const maxBoardSize = 50;
-    int const minMines = 3;
-    int const maxMines = 8;
+    int constexpr minBoardSize = 24;
+    int constexpr maxBoardSize = 50;
+    int constexpr minMines = 3;
+    int constexpr maxMines = 8;
 
-    bool rangeValidation(int const size) { return size > minBoardSize && size <= maxBoardSize; }
+    bool rangeValidation(int size) { return size > minBoardSize && size <= maxBoardSize; }
 
-    std::vector<int> initializeAxis(int const size)
+    std::vector<int> initializeAxis(int size)
     {
         std::vector<int> axis;
 
@@ -22,7 +22,7 @@ namespace Init
         }
         return axis;
     }
-    bool minesValidation(int const count) { return count >= minMines && count <= maxMines; }
+    bool minesValidation(int count) { return count >= minMines && count <= maxMines; }
 
     int getBoardDimension(std::string const &axisName)
     {

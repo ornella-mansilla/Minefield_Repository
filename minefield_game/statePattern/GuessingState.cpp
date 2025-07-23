@@ -1,7 +1,7 @@
 #include "GameContext.h"
 #include "GuessingState.h"
 #include "ResolutionState.h"
-#include "../init_header.h"
+#include <init_header.h>
 #include <iostream>
 
 bool getGuessCoordinates(int &x, int &y, const Board &board)

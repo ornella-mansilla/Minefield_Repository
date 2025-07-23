@@ -1,7 +1,7 @@
 #include "GameContext.h"
 #include "EndGameState.h"
 #include "PlacementState.h"
-#include "../board_header.h"
+#include <board_header.h>
 #include <iostream>
 
 void EndGameState::handle(GameContext& context)
