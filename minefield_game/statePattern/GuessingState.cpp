@@ -4,7 +4,7 @@
 #include <init_header.h>
 #include <iostream>
 
-bool getGuessCoordinates(int &x, int &y, const Board &board)
+bool getGuessCoordinates(int& x, int& y, const Board& board)
 {
     std::cout << "Enter X: ";
     std::cin >> x;
@@ -27,7 +27,7 @@ bool isDuplicateGuess(Player const& player, Cell const& guess)
     }
     return false; // No duplicate found
 }
-void guess(Player &player, int &guesses, GameContext &context)
+void guess(Player& player, int& guesses, GameContext& context)
 {
     std::cout << "Player " << player.id << ": You have " << guesses << " guesses. \n";
 
@@ -50,7 +50,7 @@ void guess(Player &player, int &guesses, GameContext &context)
         }
     }
 }
-void GuessingState::handle(GameContext &context)
+void GuessingState::handle(GameContext& context)
 {
     std::cout << "\n--- Guessing Phase ---\n";
 
