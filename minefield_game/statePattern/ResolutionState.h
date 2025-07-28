@@ -1,11 +1,11 @@
 #pragma once
 #include "GameState.h"
 
-bool cellMatches(const Cell& a, const Cell& b);
-class ResolutionState : public GameState
+bool cellMatches(Cell const& a, Cell const& b);
+class ResolutionState : public game::State
 {
 public:
-    void handle(GameContext& context) override;
+    void handle(Game& game) override;
 
 };
 

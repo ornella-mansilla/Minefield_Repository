@@ -1,13 +1,18 @@
 #include <iostream>
 #include <vector>
-#include "init_header.h"
-#include "cell_header.h"
-#include "player_header.h"
+#include "init.h"
+#include "cell.h"
+#include "player.h"
 namespace Init
 {
-    bool rangeValidation(int const size) { return size > 24 && size <= 50; }
+    int constexpr minBoardSize = 24;
+    int constexpr maxBoardSize = 50;
+    int constexpr minMines = 3;
+    int constexpr maxMines = 8;
 
-    std::vector<int> initializeAxis(int const size)
+    bool rangeValidation(int size) { return size > minBoardSize && size <= maxBoardSize; }
+
+    std::vector<int> initializeAxis(int size)
     {
         std::vector<int> axis;
 
@@ -17,9 +22,9 @@ namespace Init
         }
         return axis;
     }
-    bool minesValidation(int const count) { return count >= 3 && count <= 8; }
+    bool minesValidation(int count) { return count >= minMines && count <= maxMines; }
 
-    int getBoardDimension(const std::string &axisName)
+    int getBoardDimension(std::string const& axisName)
     {
         int size = 0;
         std::cout << "Enter number of " << axisName << " (between 25 and 50): ";
@@ -32,7 +37,7 @@ namespace Init
         return size;
     }
 
-    int getMineCount()
+    int readMineCount()
     {
         int count = 0;
         std::cout << "Enter number of mines (between 3 and 8): ";
@@ -45,72 +50,88 @@ namespace Init
         return count;
     }
 
-    void placeMinesForPlayer(Player &player, int count, int maxX, int maxY, Board &board)
-    {
-        player.mines.clear();
 
+
+    void printRemainingMines(Player const& player)
+    {
         std::cout << "\nRemaining mines: " << player.remainingMines << "\n";
         std::cout << "You may place your " << player.remainingMines << " mines now.\n";
+    }
+
+    bool getMineCoordinates(int& x, int& y, int maxX, int maxY)
+    {
+        std::cout << "Enter X coordinate (1-" << maxX << "): ";
+        std::cin >> x;
+        std::cout << "Enter Y coordinate (1-" << maxY << "): ";
+        std::cin >> y;
+
+        return (x >= 1 && x <= maxX && y >= 1 && y <= maxY);
+    }
+
+    bool isValidPlacement(Board const& board, Player const& player, int x, int y)
+    {
+        int indexX = x - 1;
+        int indexY = y - 1;
+
+        if (board.grid[indexY][indexX].isCellTaken())
+        {
+            std::cout << "That cell is taken from a previous guess. Try again.\n";
+            return false;
+        }
+
+        for (const auto &disabled : player.disabledMineSpots)
+        {
+            if (disabled.x == x && disabled.y == y)
+            {
+                std::cout << "You lost a mine there before. You can't reuse that cell.\n";
+                return false;
+            }
+        }
+
+        for (const auto &mine : player.mines)
+        {
+            if (mine.location.x == x && mine.location.y == y)
+            {
+                std::cout << "Already placed a mine there this turn. Try again.\n";
+                return false;
+            }
+        }
+
+        return true; // Valid placement
+    }
+
+    void placeMinesForPlayer(Player& player, int count, int maxX, int maxY, Board& board)
+    {
+        player.mines.clear();
+        printRemainingMines(player); // Print remaining mines
 
         while (player.mines.size() < static_cast<size_t>(player.remainingMines))
         {
-            int x, y;
-            std::cout << "Place mine #" << (player.mines.size() + 1) << "\n";
-            std::cout << "Enter X coordinate (1-" << maxX << "): ";
-            std::cin >> x;
-            std::cout << "Enter Y coordinate (1-" << maxY << "): ";
-            std::cin >> y;
+            int x = 0;
+            int y = 0;
 
-            if (x < 1 || x > maxX || y < 1 || y > maxY)
+            if (!getMineCoordinates(x, y, maxX, maxY))
             {
                 std::cout << "Invalid position. Try again.\n";
                 continue;
             }
 
-            bool validPlacement = true;
-
-            int indexX = x - 1;
-            int indexY = y - 1;
-            if (board.grid[indexY][indexX].isTaken())
+            if (!isValidPlacement(board, player, x, y))
             {
-                std::cout << "That cell is taken from a previous guess. Try again.\n";
-                validPlacement = false;
+                continue; // Invalid placement, retry
             }
 
-            for (const auto &disabled : player.disabledMineSpots)
-            {
-                if (disabled.getX() == x && disabled.getY() == y)
-                {
-                    std::cout << "You lost a mine there before. You can't reuse that cell.\n";
-                    validPlacement = false;
-                    break;
-                }
-            }
-
-            for (const auto &mine : player.mines)
-            {
-                if (mine.cell.getX() == x && mine.cell.getY() == y)
-                {
-                    std::cout << "Already placed a mine there this turn. Try again.\n";
-                    validPlacement = false;
-                    break;
-                }
-            }
-
-            if (!validPlacement)
-                continue;
-
-            player.mines.push_back(Mine(x, y));
+            player.mines.push_back(Mine(x, y)); // Place the mine
         }
     }
 
     // prints a player's mines
-    void printPlayerMines(const Player &player, int playerNumber)
+    void printPlayerMines(Player const& player, int playerNumber)
     {
         std::cout << "\nMines of the player " << playerNumber << ":\n";
         for (size_t i = 0; i < player.mines.size(); ++i)
         {
-            std::cout << "Mine #" << i + 1 << ": (" << player.mines[i].cell.getX() << "," << player.mines[i].cell.getY() << ")\n";
+            std::cout << "Mine #" << (i + 1) << ": (" << player.mines[i].location.x << "," << player.mines[i].location.y << ")\n";
         }
     }
     void printGameSetup(int rows, int columns, int mines)
@@ -120,7 +141,7 @@ namespace Init
         std::cout << "Each player has " << mines << " mines per turn\n";
     }
 
-    void initializeGrid(Board &board)
+    void initializeGrid(Board& board)
     {
         board.grid.resize(board.axisY.size());
 
@@ -129,7 +150,7 @@ namespace Init
             board.grid[y].resize(board.axisX.size());
             for (size_t x = 0; x < board.axisX.size(); ++x)
             {
-                board.grid[y][x] = Cell(board.axisX[x], board.axisY[y], CellStatus::Empty);
+                board.grid[y][x] = Cell{board.axisX[x], board.axisY[y], CellStatus::Empty};
             }
         }
     }
