@@ -1,8 +1,8 @@
 #pragma once
 #include "GameState.h"
 
-class EndGameState : public GameState
+class EndGameState : public game::State
 {
 public:
-    void handle(GameContext& context) override;
+    void handle(Game& game) override;
 };

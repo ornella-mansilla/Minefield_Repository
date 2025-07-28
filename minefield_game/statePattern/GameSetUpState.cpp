@@ -1,26 +1,26 @@
 #include "GameContext.h"
 #include "GameSetUpState.h"
 #include "PlacementState.h"
-#include <init_header.h>
+#include <init.h>
 #include <iostream>
 
-//se ve super mal el table y la parte de placement no me dice que mina esto poniendo en ese momento.
-void GameSetUpState::handle(GameContext& context)
+void GameSetUpState::handle(Game& game)
 {
     std::cout << "=== Game Setup ===\n";
 
-    context.columns = Init::getBoardDimension("columns");
-    context.rows = Init::getBoardDimension("rows");
-    context.mines = Init::readMineCount();
-    context.board.axisX = Init::initializeAxis(context.columns);
-    context.board.axisY = Init::initializeAxis(context.rows);
-    context.player1.remainingMines = context.mines;
-    context.player1.id = 1;
-    context.player2.remainingMines = context.mines;
-    context.player2.id = 2;
+    game.context.columns = Init::getBoardDimension("columns");
+    game.context.rows = Init::getBoardDimension("rows");
+    game.context.mines = Init::readMineCount();
+    game.context.board.axisX = Init::initializeAxis(game.context.columns);
+    game.context.board.axisY = Init::initializeAxis(game.context.rows);
 
-    Init::printGameSetup(context.rows, context.columns, context.mines);
-    Init::initializeGrid(context.board);
+    game.context.player1.remainingMines = game.context.mines;
+    game.context.player1.id = 1;
+    game.context.player2.remainingMines = game.context.mines;
+    game.context.player2.id = 2;
 
-    context.setState(std::make_unique<PlacementState>());
+    Init::printGameSetup(game.context.rows, game.context.columns, game.context.mines);
+    Init::initializeGrid(game.context.board);
+
+    game.logic.setState(std::make_unique<PlacementState>());
 }

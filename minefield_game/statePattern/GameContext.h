@@ -1,23 +1,34 @@
 #pragma once
 #include <memory>
-#include <board_header.h>
-#include <player_header.h>
+#include <board.h>
+#include <player.h>
+struct Game;
 
-class GameState;
-
-class GameContext
+namespace game
 {
-private:
-    std::unique_ptr<GameState> currentState;
+    class State;
+    class Logic
+    {
+    public:
+        void setState(std::unique_ptr<State> state);
+        void run(Game &game);
 
-public:
-    Board board;
-    Player player1;
-    Player player2;
-    int columns;
-    int rows;
-    int mines;
+    private:
+        std::unique_ptr<State> mCurrentState;
+    };
+    struct Context
+    {
+        Board board;
+        Player player1;
+        Player player2;
+        int columns;
+        int rows;
+        int mines;
+    };
 
-    void setState(std::unique_ptr<GameState> state);
-    void run();
+} // namespace game
+struct Game
+{
+    game::Context context;
+    game::Logic logic;
 };

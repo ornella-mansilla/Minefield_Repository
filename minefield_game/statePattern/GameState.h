@@ -1,10 +1,11 @@
 #pragma once
+#include "GameContext.h"
 
-class GameContext; // forward declaration
+struct Game; 
 
-class GameState
+class game::State
 {
 public:
-    virtual ~GameState() = default;
-    virtual void handle(GameContext& context) = 0;
+    virtual ~State() = default;
+    virtual void handle(Game& game) = 0;
 };
