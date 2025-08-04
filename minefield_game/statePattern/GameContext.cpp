@@ -1,15 +1,15 @@
 #include "GameContext.h"
 #include "GameState.h"
 
-void GameContext::setState(std::unique_ptr<GameState> state)
+void game::Logic::setState(std::unique_ptr<State> state)
 {
-    currentState = std::move(state);
+    mCurrentState = std::move(state);
 }
 
-void GameContext::run()
+void game::Logic::run(Game& game)
 {
-    while (currentState)
+    while (mCurrentState)
     {
-        currentState->handle(*this);
+        mCurrentState->handle(game);
     }
 }

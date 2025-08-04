@@ -1,3 +1,4 @@
+#include <memory>
 #include "statePattern/GameState.h"
 #include "statePattern/GameContext.h"
 #include "statePattern/GameSetUpState.h"
@@ -35,8 +36,8 @@ Minefield
 
 */
 int main() {
-    GameContext context;
-    context.setState(std::make_unique<GameSetUpState>());
-    context.run();
+    Game game;
+    game.logic.setState(std::make_unique<GameSetUpState>());
+    game.logic.run(game);
     return 0;
 }

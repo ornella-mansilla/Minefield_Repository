@@ -1,50 +1,66 @@
 #include <iostream>
-#include <iomanip>
-#include "board_header.h"
+#include "board.h"
 
 namespace BoardUtils
 {
-    void printBoardPerPlayer(const Board& board, const Player& player)
+
+    void printColumnHeaders(Board const& board)
     {
-        // print column headers
         std::cout << "    ";
         for (int x : board.axisX)
         {
             std::cout << (x < 10 ? " " : "") << x << " ";
         }
-        std::cout << "\n   ";
-        for (size_t i = 0; i < board.axisX.size(); ++i) std::cout << "---";
-        std::cout << "\n";
+        std::cout << '\n';
 
+        std::cout << "   ";
+        for (size_t i = 0; i < board.axisX.size(); ++i)
+        {
+            std::cout << "---";
+        }
+        std::cout << '\n';
+    }
+
+    bool isMineVisibleForPlayer(Board const& board, Player const& player, size_t x, size_t y)
+    {
+        for (Mine const& mine : player.mines)
+        {
+            int mineX = mine.location.x;
+            int mineY = mine.location.y;
+            if (mineX == board.axisX[x] && mineY == board.axisY[y])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void printRow(Board const& board, Player const& player, size_t y)
+    {
+        int displayY = board.axisY[y];
+        std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
+
+        for (size_t x = 0; x < board.axisX.size(); ++x)
+        {
+            if (isMineVisibleForPlayer(board, player, x, y))
+            {
+                std::cout << "*  ";
+            }
+            else
+            {
+                std::cout << board.grid[y][x].getCellSymbol() << "  ";
+            }
+        }
+        std::cout << '\n';
+    }
+
+    void printBoardPerPlayer(Board const& board, Player const& player)
+    {
+        printColumnHeaders(board);
         for (size_t y = 0; y < board.axisY.size(); ++y)
         {
-            int displayY = board.axisY[y];
-            std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
-
-            for (size_t x = 0; x < board.axisX.size(); ++x)
-            {
-                // Check if this cell is/has a player's mine
-                bool isMineForPlayer = false;
-                for (const auto& mine : player.mines)
-                {
-                    int mineX = mine.cell.getX();
-                    int mineY = mine.cell.getY();
-                    if (mineX == board.axisX[x] && mineY == board.axisY[y])
-                    {
-                        isMineForPlayer = true;
-                        break;
-                    }
-                }
-
-                if (isMineForPlayer){
-                    std::cout << "*  "; // mine visible to this player
-                }
-                else{
-                    std::cout << board.grid[y][x].getSymbol() << "  "; // actual state of the cell
-                }
-            }
-            std::cout << "\n";
+            printRow(board, player, y);
         }
     }
-    
+
 }
