@@ -5,12 +5,12 @@
 #include "player.h"
 namespace Init
 {
-    int constexpr minBoardSize = 24;
-    int constexpr maxBoardSize = 50;
-    int constexpr minMines = 3;
-    int constexpr maxMines = 8;
+    static constexpr int kMinBoardSize = 24;
+    static constexpr int kMaxBoardSize = 50;
+    static constexpr int kMinMines = 3;
+    static constexpr int kMaxMines = 8;
 
-    bool rangeValidation(int size) { return size > minBoardSize && size <= maxBoardSize; }
+    bool rangeValidation(int size) { return size > kMinBoardSize && size <= kMaxBoardSize; }
 
     std::vector<int> initializeAxis(int size)
     {
@@ -22,9 +22,9 @@ namespace Init
         }
         return axis;
     }
-    bool minesValidation(int count) { return count >= minMines && count <= maxMines; }
+    bool minesValidation(int count) { return count >= kMinMines && count <= kMaxMines; }
 
-    int getBoardDimension(std::string const& axisName)
+    int getBoardDimension(std::string const &axisName)
     {
         int size = 0;
         std::cout << "Enter number of " << axisName << " (between 25 and 50): ";
@@ -50,15 +50,13 @@ namespace Init
         return count;
     }
 
-
-
-    void printRemainingMines(Player const& player)
+    void printRemainingMines(Player const &player)
     {
         std::cout << "\nRemaining mines: " << player.remainingMines << "\n";
         std::cout << "You may place your " << player.remainingMines << " mines now.\n";
     }
 
-    bool getMineCoordinates(int& x, int& y, int maxX, int maxY)
+    bool getMineCoordinates(int &x, int &y, int maxX, int maxY)
     {
         std::cout << "Enter X coordinate (1-" << maxX << "): ";
         std::cin >> x;
@@ -68,7 +66,7 @@ namespace Init
         return (x >= 1 && x <= maxX && y >= 1 && y <= maxY);
     }
 
-    bool isValidPlacement(Board const& board, Player const& player, int x, int y)
+    bool isValidPlacement(Board const &board, Player const &player, int x, int y)
     {
         int indexX = x - 1;
         int indexY = y - 1;
@@ -100,7 +98,7 @@ namespace Init
         return true; // Valid placement
     }
 
-    void placeMinesForPlayer(Player& player, int count, int maxX, int maxY, Board& board)
+    void placeMinesForPlayer(Player &player, int count, int maxX, int maxY, Board &board)
     {
         player.mines.clear();
         printRemainingMines(player); // Print remaining mines
@@ -126,7 +124,7 @@ namespace Init
     }
 
     // prints a player's mines
-    void printPlayerMines(Player const& player, int playerNumber)
+    void printPlayerMines(Player const &player, int playerNumber)
     {
         std::cout << "\nMines of the player " << playerNumber << ":\n";
         for (size_t i = 0; i < player.mines.size(); ++i)
@@ -141,7 +139,7 @@ namespace Init
         std::cout << "Each player has " << mines << " mines per turn\n";
     }
 
-    void initializeGrid(Board& board)
+    void initializeGrid(Board &board)
     {
         board.grid.resize(board.axisY.size());
 

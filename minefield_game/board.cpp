@@ -4,7 +4,7 @@
 namespace BoardUtils
 {
 
-    void printColumnHeaders(Board const& board)
+    void printColumnHeaders(Board const &board)
     {
         std::cout << "    ";
         for (int x : board.axisX)
@@ -20,10 +20,14 @@ namespace BoardUtils
         }
         std::cout << '\n';
     }
-
-    bool isMineVisibleForPlayer(Board const& board, Player const& player, size_t x, size_t y)
+    bool isMineVisibleForPlayer(Board const &board, Player const &player, size_t x, size_t y)
     {
-        for (Mine const& mine : player.mines)
+        if (x >= board.axisX.size() || y >= board.axisY.size())
+        {
+            return false; // out of bounds check
+        }
+
+        for (Mine const &mine : player.mines)
         {
             int mineX = mine.location.x;
             int mineY = mine.location.y;
@@ -35,13 +39,27 @@ namespace BoardUtils
         return false;
     }
 
-    void printRow(Board const& board, Player const& player, size_t y)
+    void printRow(Board const &board, Player const &player, size_t y)
     {
+        // check bounds for axisY and grid
+        if (y >= board.axisY.size() || y >= board.grid.size())
+        {
+            std::cerr << "Error: Y index out of bounds.\n";
+            return;
+        }
+
         int displayY = board.axisY[y];
         std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
 
         for (size_t x = 0; x < board.axisX.size(); ++x)
         {
+            // also check if x is within bounds of grid[y]
+            if (x >= board.grid[y].size())
+            {
+                std::cerr << "Error: X index out of bounds at row " << y << ".\n";
+                return;
+            }
+
             if (isMineVisibleForPlayer(board, player, x, y))
             {
                 std::cout << "*  ";
@@ -54,7 +72,7 @@ namespace BoardUtils
         std::cout << '\n';
     }
 
-    void printBoardPerPlayer(Board const& board, Player const& player)
+    void printBoardPerPlayer(Board const &board, Player const &player)
     {
         printColumnHeaders(board);
         for (size_t y = 0; y < board.axisY.size(); ++y)
