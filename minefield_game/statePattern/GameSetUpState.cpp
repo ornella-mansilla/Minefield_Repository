@@ -11,8 +11,6 @@ void GameSetUpState::handle(Game& game)
     game.context.columns = Init::getBoardDimension("columns");
     game.context.rows = Init::getBoardDimension("rows");
     game.context.mines = Init::readMineCount();
-    game.context.board.axisX = Init::initializeAxis(game.context.columns);
-    game.context.board.axisY = Init::initializeAxis(game.context.rows);
 
     game.context.player1.remainingMines = game.context.mines;
     game.context.player1.id = 1;
@@ -20,7 +18,7 @@ void GameSetUpState::handle(Game& game)
     game.context.player2.id = 2;
 
     Init::printGameSetup(game.context.rows, game.context.columns, game.context.mines);
-    Init::initializeGrid(game.context.board);
+    Init::initializeGrid(game.context.board, game.context.rows, game.context.columns);
 
     game.logic.setState(std::make_unique<PlacementState>());
 }

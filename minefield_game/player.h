@@ -4,7 +4,6 @@
 struct Mine;
 struct Player
 {
-    //deberia tener un id
     int id; // Player ID
     std::vector<Mine> mines;
     std::vector<Cell> guesses;

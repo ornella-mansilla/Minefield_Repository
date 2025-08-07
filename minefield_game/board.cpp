@@ -4,30 +4,39 @@
 namespace BoardUtils
 {
 
-    void printColumnHeaders(Board const& board)
+    void printColumnHeaders(Board const &board)
     {
         std::cout << "    ";
-        for (int x : board.axisX)
+        if (board.grid.empty()) return;
+
+        for (size_t x = 0; x < board.grid[0].size(); ++x)
         {
-            std::cout << (x < 10 ? " " : "") << x << " ";
+            int displayX = static_cast<int>(x + 1);
+            std::cout << (displayX < 10 ? " " : "") << displayX << " ";
         }
         std::cout << '\n';
 
         std::cout << "   ";
-        for (size_t i = 0; i < board.axisX.size(); ++i)
+        for (size_t x = 0; x < board.grid[0].size(); ++x)
         {
             std::cout << "---";
         }
         std::cout << '\n';
     }
 
-    bool isMineVisibleForPlayer(Board const& board, Player const& player, size_t x, size_t y)
+    bool isMineVisibleForPlayer(Board const &board, Player const &player, size_t x, size_t y)
     {
-        for (Mine const& mine : player.mines)
+        if (y >= board.grid.size() || x >= board.grid[y].size())
         {
-            int mineX = mine.location.x;
-            int mineY = mine.location.y;
-            if (mineX == board.axisX[x] && mineY == board.axisY[y])
+            return false;
+        }
+
+        int displayX = static_cast<int>(x + 1);
+        int displayY = static_cast<int>(y + 1);
+
+        for (Mine const &mine : player.mines)
+        {
+            if (mine.location.x == displayX && mine.location.y == displayY)
             {
                 return true;
             }
@@ -35,12 +44,18 @@ namespace BoardUtils
         return false;
     }
 
-    void printRow(Board const& board, Player const& player, size_t y)
+    void printRow(Board const &board, Player const &player, size_t y)
     {
-        int displayY = board.axisY[y];
+        if (y >= board.grid.size())
+        {
+            std::cerr << "Error: Y index out of bounds.\n";
+            return;
+        }
+
+        int displayY = static_cast<int>(y + 1);
         std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
 
-        for (size_t x = 0; x < board.axisX.size(); ++x)
+        for (size_t x = 0; x < board.grid[y].size(); ++x)
         {
             if (isMineVisibleForPlayer(board, player, x, y))
             {
@@ -54,10 +69,10 @@ namespace BoardUtils
         std::cout << '\n';
     }
 
-    void printBoardPerPlayer(Board const& board, Player const& player)
+    void printBoardPerPlayer(Board const &board, Player const &player)
     {
         printColumnHeaders(board);
-        for (size_t y = 0; y < board.axisY.size(); ++y)
+        for (size_t y = 0; y < board.grid.size(); ++y)
         {
             printRow(board, player, y);
         }
