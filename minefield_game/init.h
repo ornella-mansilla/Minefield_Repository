@@ -12,5 +12,5 @@ namespace Init
     void placeMinesForPlayer(Player& player, int count, int maxX, int maxY, Board& board);
     void printPlayerMines(Player const& player, int playerNumber);
     void printGameSetup(int rows, int columns, int mines);
-    void initializeGrid(Board& board);
+    void initializeGrid(Board& board, int rows, int cols);
 }

@@ -4,10 +4,7 @@
 
 struct Board
 {
-    std::vector<int> axisX;  //columns      
-    std::vector<int> axisY;  //rows
     std::vector<std::vector<Cell>> grid;
-
 };
 namespace BoardUtils
 {
