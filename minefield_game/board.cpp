@@ -1,125 +1,81 @@
 #include <iostream>
-#include <iomanip>
-#include "board_header.h"
+#include "board.h"
 
-/*void showBoard(std::vector<std::vector<int>>& board)
-{
-    std::cout << "  ";
-    for (int j = 0; j < board[0].size(); ++j)
-    {
-        std::cout << std::setw(3) << j;
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < board.size(); ++i)
-    {
-        std::cout << std::setw(2) << i;
-        for (int k = 0; k < board[i].size(); ++k)
-        {
-            std::cout << std::setw(3) << board[i][k];
-        }
-        std::cout << std::endl;
-    }
-}*/
-/*void showBoard(const Board& board)
-{
-    // Imprimir encabezado columnas
-    std::cout << "   ";
-    for (size_t j = 0; j < board.axisX.size(); ++j)
-    {
-        std::cout << std::setw(3) << board.axisX[j];
-    }
-    std::cout << std::endl;
-
-    // Imprimir filas
-    for (size_t i = 0; i < board.grid.size(); ++i)
-    {
-        std::cout << std::setw(2) << board.axisY[i];  // Etiqueta fila
-        for (size_t k = 0; k < board.grid[i].size(); ++k)
-        {
-            char symbol = static_cast<char>(board.grid[i][k].getState());
-            std::cout << std::setw(3) << symbol;
-        }
-        std::cout << std::endl;
-    }
-}*/
 namespace BoardUtils
 {
-    /*void printBoard(const Board& board)
+
+    void printColumnHeaders(Board const &board)
     {
         std::cout << "    ";
-        for (int x : board.axisX)
-        {
-            std::cout << (x < 10 ? " " : "") << x << " ";
-        }
-        std::cout << "\n   ";
-        for (size_t i = 0; i < board.axisX.size(); ++i) std::cout << "---";
-        std::cout << "\n";
+        if (board.grid.empty()) return;
 
-        for (size_t y = 0; y < board.axisY.size(); ++y)
+        for (size_t x = 0; x < board.grid[0].size(); ++x)
         {
-            int displayY = board.axisY[y];
-            std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
-
-            for (size_t x = 0; x < board.axisX.size(); ++x)
-            {
-                char symbol = static_cast<char>(board.grid[y][x].getState());
-                std::cout << symbol << "  ";
-            }
-            std::cout << "\n";
+            int displayX = static_cast<int>(x + 1);
+            std::cout << (displayX < 10 ? " " : "") << displayX << " ";
         }
-    }*/
-    
-    /*void printBoardPerPlayer(Board& board, const Player& player)
+        std::cout << '\n';
+
+        std::cout << "   ";
+        for (size_t x = 0; x < board.grid[0].size(); ++x)
+        {
+            std::cout << "---";
+        }
+        std::cout << '\n';
+    }
+
+    bool isMineVisibleForPlayer(Board const &board, Player const &player, size_t x, size_t y)
     {
-        for (size_t i = 0; i < player.mines.size(); ++i) 
+        if (y >= board.grid.size() || x >= board.grid[y].size())
         {
-            int x = player.mines[i].cell.getX();
-            int y = player.mines[i].cell.getY();
-            int indexX = x - 1;
-            int indexY = y - 1;
-            board.grid[indexY][indexX].setState(CellState::Bomb);
+            return false;
         }
-    }*/
 
-    void printBoardPerPlayer(const Board& board, const Player& player)
-    {
-        // Imprimir encabezado columnas
-        std::cout << "    ";
-        for (int x : board.axisX)
+        int displayX = static_cast<int>(x + 1);
+        int displayY = static_cast<int>(y + 1);
+
+        for (Mine const &mine : player.mines)
         {
-            std::cout << (x < 10 ? " " : "") << x << " ";
-        }
-        std::cout << "\n   ";
-        for (size_t i = 0; i < board.axisX.size(); ++i) std::cout << "---";
-        std::cout << "\n";
-
-        for (size_t y = 0; y < board.axisY.size(); ++y)
-        {
-            int displayY = board.axisY[y];
-            std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
-
-            for (size_t x = 0; x < board.axisX.size(); ++x)
+            if (mine.location.x == displayX && mine.location.y == displayY)
             {
-                // Chequeo si esta celda es mina del jugador
-                bool isMineForPlayer = false;
-                for (const auto& mine : player.mines)
-                {
-                    int mineX = mine.cell.getX();
-                    int mineY = mine.cell.getY();
-                    if (mineX == board.axisX[x] && mineY == board.axisY[y])
-                    {
-                        isMineForPlayer = true;
-                        break;
-                    }
-                }
-
-                if (isMineForPlayer)
-                    std::cout << "*  "; // Mina visible para este jugador
-                else
-                    std::cout << board.grid[y][x].getSymbol() << "  "; // Estado real de la celda
+                return true;
             }
-            std::cout << "\n";
+        }
+        return false;
+    }
+
+    void printRow(Board const &board, Player const &player, size_t y)
+    {
+        if (y >= board.grid.size())
+        {
+            std::cerr << "Error: Y index out of bounds.\n";
+            return;
+        }
+
+        int displayY = static_cast<int>(y + 1);
+        std::cout << (displayY < 10 ? " " : "") << displayY << "| ";
+
+        for (size_t x = 0; x < board.grid[y].size(); ++x)
+        {
+            if (isMineVisibleForPlayer(board, player, x, y))
+            {
+                std::cout << "*  ";
+            }
+            else
+            {
+                std::cout << board.grid[y][x].getCellSymbol() << "  ";
+            }
+        }
+        std::cout << '\n';
+    }
+
+    void printBoardPerPlayer(Board const &board, Player const &player)
+    {
+        printColumnHeaders(board);
+        for (size_t y = 0; y < board.grid.size(); ++y)
+        {
+            printRow(board, player, y);
         }
     }
-    
+
 }
